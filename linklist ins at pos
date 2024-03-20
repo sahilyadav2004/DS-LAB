@@ -1,0 +1,126 @@
+#include<stdio.h>
+#include<stdlib.h>
+typedef struct node{
+	int data;
+	struct node *next;
+}node;
+
+node * create(){
+	node * start,*temp, *curr;
+	int val;
+	start=(node *)malloc(sizeof(node));
+	printf("enter data for first node: ");
+	scanf("%d",&val);
+	if(val==-1){
+		start=NULL;
+	}
+	else{
+		start->data=val;
+		curr=start;
+		while(1){
+			int val1;
+			printf("insert value and -1 for for exit: ");
+			scanf("%d",&val1);
+			if(val1==-1){
+				curr->next='\0';
+				break;
+			}
+			temp=(node *)malloc(sizeof(node));
+			temp->data = val1;
+			curr->next = temp;
+			curr = curr->next;
+		}
+		curr->next='\0';
+		return start;
+	}
+}
+node* delete_at_start(node*start,int *val)
+{
+    *val=start->data;
+    node* temp;
+    temp=start;
+    start=start->next;
+    free(temp);
+    return start;
+}
+node* delete_at_position(node *start,int pos,int* val){
+    if(pos==1){
+        start=delete_at_start(start,&val);
+        return start;
+    }
+    else{
+        node *ptr;
+	    ptr=start;
+        int count=1;
+	    while (count<pos-1){
+		    ptr=ptr->next;
+            count++;
+	    }
+	    node *temp =ptr->next;
+	    *val = temp->data;
+	    ptr->next=temp->next;
+	    free(temp);
+	    return start;
+    }
+}
+
+node * insert_at_start(node * start,int val){
+	node* temp;
+    temp=(node*)malloc(sizeof(node));
+    temp->data=val;
+    temp->next=start;
+    start=temp;
+    return start;
+}
+
+node* insert_at_position(node *start, int pos,int val){
+    if(pos==1)
+    {
+        return insert_at_start(start,val);
+    }
+	node *ptr;
+	int count=1;
+	ptr=start;
+	while (count<pos-1){
+		ptr=ptr->next;
+        count++;
+	}
+
+	node *temp1 =(node *)malloc(sizeof(node));
+	temp1->data=val;
+	temp1->next=ptr->next;
+	ptr->next=temp1;
+    return start;
+}
+void display(node * start){
+	node * temp;
+	temp=start;
+	while(temp!=NULL){
+		printf("%d",temp->data);
+		temp=temp->next;
+	}
+	return;
+}
+int main(){
+	int n;
+	node * start = create();
+	printf("enter 1 to insert and 2 to delete: ");
+	scanf("%d",&n);
+	node * ptr;
+	if (n==1){
+		int pos,val;
+        printf("enter the pos of the element at which you want to insert: ");
+		scanf("%d",&pos);
+		printf("enter the val which you want to insert: ");
+		scanf("%d",&val);
+		start=insert_at_position(start,pos,val);
+		display(start);
+	}
+	else if(n==2){
+		int pos,val;
+		printf("enter the pos of the element at which you want to delete: ");
+		scanf("%d",&pos);
+		start=delete_at_position(start,pos,&val);
+		display(start);
+	}
+}
