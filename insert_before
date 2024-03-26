@@ -1,0 +1,191 @@
+#include <stdio.h>
+#include <stdlib.h>
+typedef struct node
+{
+	int data;
+	struct node *next, *back;
+} node;
+
+node *create()
+{
+	node *start, *temp, *curr;
+	int val;
+	start = (node *)malloc(sizeof(node));
+	printf("enter data for first node: ");
+	scanf("%d", &val);
+	if (val == -1)
+	{
+		start = NULL;
+	}
+	else
+	{
+		start->data = val;
+		curr = start;
+		while (1)
+		{
+			int val1;
+			printf("insert value and -1 for for exit: ");
+			scanf("%d", &val1);
+			if (val1 == -1)
+			{
+				curr->next = '\0';
+				break;
+			}
+			temp = (node *)malloc(sizeof(node));
+			temp->data = val1;
+			curr->next = temp;
+			temp->back = curr;
+			curr = temp;
+		}
+		curr->next = '\0';
+		return start;
+	}
+}
+void traverse_forward(node *start)
+{
+	node *temp;
+	temp = start;
+	while (temp != NULL)
+	{
+		printf("%d ", temp->data);
+		temp = temp->next;
+	}
+}
+void traverse_backward(node *start)
+{
+	node *temp;
+	temp = start;
+	while (temp->next != NULL)
+	{
+		temp = temp->next;
+	}
+	while (temp != NULL)
+	{
+		printf("%d ", (temp->data));
+		temp = temp->back;
+	}
+	printf("\n");
+}
+void insert_at_start(node **start)
+{
+	int newval;
+	printf("enter the val\n");
+	scanf("%d", &newval);
+	node*temp;
+	temp=(node*)malloc(sizeof(node));
+	temp->data=newval;
+	temp->next=*start;
+	(*start)->back=temp;
+	temp->back=NULL;
+	*start=temp;
+	return;
+}
+void insert_before_val(node **start, int val)
+{
+	node *ptr;
+	int newval;
+	ptr =* start;
+	while (ptr != NULL && ptr->data != val)
+	{
+		ptr = ptr->next;
+	}
+	if (ptr == NULL)
+	{
+		printf("invalid value");
+		return;
+	}
+	if (ptr == (*start))
+	{
+		insert_at_start(start);
+		return;
+	}
+	node *temp = (node *)malloc(sizeof(node));
+	printf("enter the val\n");
+	scanf("%d", &newval);
+	temp->data = newval;
+	node *backnode;
+	backnode = (node *)malloc(sizeof(node));
+	backnode = ptr->back;
+	temp->back = backnode;
+	temp->next = ptr;
+	ptr->back = temp;
+	backnode->next = temp;
+	return;
+}
+void delete_before_val(node **start, int val)
+{
+	node *ptr;
+	node *backnode;
+	ptr =*start;
+	while (ptr != NULL && ptr->data != val)
+	{
+		ptr = ptr->next;
+	}
+	if (ptr == NULL)
+	{
+		printf("invalid value\n");
+		return;
+	}
+	if(ptr==*start)
+	{
+		printf("not possible\n");
+		return;
+	}
+	if(ptr==(*start)->next)
+	{
+		node* t1=*start;
+		*start=ptr;
+		(*start)->back=NULL;
+		free(t1);
+		return;
+	}
+	node *temp = ptr->back;
+	ptr->back = temp->back;
+	(temp->back)->next=ptr;
+	val = temp->data;
+	free(temp);
+	return;
+}
+int main()
+{
+	node *start = create();
+	printf("\n");
+	int n;
+	while (1)
+	{
+		printf("enter 1 to insert and 2 to delete 3 for traverse:\n ");
+		scanf("%d", &n);
+		if (n == 1)
+		{
+			int val;
+			printf("enter the val of the element before which you want to insert:\n ");
+			scanf("%d", &val);
+			printf("\n");
+			insert_before_val(&start, val);
+		}
+		else if (n == 2)
+		{
+			int val1;
+			printf("enter the val of the element before which you want to delete: ");
+			scanf("%d", &val1);
+			printf("\n");
+			delete_before_val(&start, val1);
+		}
+		else if (n == 3)
+		{
+			int choice;
+			printf("enter 1 for traverse forward and 2 for backward:\n");
+			scanf("%d", &choice);
+			printf("\n");
+			if (choice == 1)
+			{
+				traverse_forward(start);
+				printf("\n");
+			}
+			if (choice == 2)
+			{
+				traverse_backward(start);
+			}
+		}
+	}
+}
